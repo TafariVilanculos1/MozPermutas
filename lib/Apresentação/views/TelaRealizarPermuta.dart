@@ -22,7 +22,7 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
 
          title: Text("REALIZAR PERMUTA", style: TextStyle(fontSize: 15,fontWeight: FontWeight.w700),),
          centerTitle: true,
-         backgroundColor: Color(0xFF003366),
+         backgroundColor: Colors.black,
          foregroundColor: Colors.white,
          bottom: PreferredSize(
            preferredSize: Size.fromHeight(1.0),

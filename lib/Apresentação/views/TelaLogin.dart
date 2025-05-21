@@ -49,11 +49,14 @@ class TelaLogin extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => MenuPrincipal()));
                   // lógica de login
                 },
-                child: Text("Entrar", style: TextStyle(fontSize: 20)),
+                child: Text("Entrar", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Color(0xFF3CB371),
-                  minimumSize: Size(250, 50),
+                  minimumSize: Size(350, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )
                 ),
               ),
               SizedBox(height: 12),
@@ -62,13 +65,46 @@ class TelaLogin extends StatelessWidget {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => TelaCriarConta()));
                 },
-                child: Text("Criar Conta", style: TextStyle(fontSize: 20)),
+                child: Text("Criar Conta", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Color(0xFF003366),
-                  minimumSize: Size(250, 50),
+                  minimumSize: Size(350, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )
                 ),
               ),
+
+              SizedBox(height: 12),
+            ElevatedButton(
+            onPressed: () {
+        // Ação ao clicar no botão
+      },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          minimumSize: const Size(350, 50),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),// Fundo branco, como o botão típico da Google
+        ),
+
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/google_icon.png', // Caminho do ícone da Google (coloque o ficheiro na pasta assets)
+              height: 24.0,
+            ),
+            const SizedBox(width: 12.0),
+            const Text("Entrar com Google",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+          ],
+        ),
+      )
+
+
+      ,
               Spacer(), // empurra levemente o conteúdo para cima
             ],
           ),
