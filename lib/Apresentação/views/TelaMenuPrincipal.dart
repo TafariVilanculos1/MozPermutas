@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaBuscarCompativeis.dart';
+import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMeuPerfil.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMinhasPermutas.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaRealizarPermuta.dart';
 
@@ -11,6 +12,7 @@ class MenuPrincipal extends StatelessWidget{
     return Scaffold(
       appBar:AppBar(
       backgroundColor: Colors.black,
+      title: Text("MOZ PERMUTAS",style: TextStyle(fontSize: 15,color: Color(0xFF3CB371),fontWeight: FontWeight.bold,fontStyle:FontStyle.italic ),),
       elevation: 10,
       iconTheme: IconThemeData(color: Colors.white),
       actions: [
@@ -18,9 +20,7 @@ class MenuPrincipal extends StatelessWidget{
           padding: const EdgeInsets.only(right: 16.0),
           child: InkWell(
             onTap: () {
-              // Aqui vai o evento, como navegar para outra página
-              print('Perfil clicado');
-              // Exemplo: Navigator.pushNamed(context, '/perfil');
+               Navigator.push(context, MaterialPageRoute(builder: (context) => TelaMeuPerfilG()));
             },
             borderRadius: BorderRadius.circular(8), // opcional, para o efeito de toque
             child: Row(
@@ -43,7 +43,9 @@ class MenuPrincipal extends StatelessWidget{
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(children:
-          [Text("MENU PRINCIPAL",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+          [
+            SizedBox(height: 46,),
+            Text("MENU PRINCIPAL",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
             SizedBox(height: 46,),
             ElevatedButton(
               onPressed: () {
