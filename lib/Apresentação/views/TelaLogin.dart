@@ -32,7 +32,7 @@ class TelaLogin extends StatelessWidget {
               // Campos de entrada e botões
               TextField(
                 decoration: InputDecoration(
-                  labelText: "Introduza o seu número de celular",
+                  labelText: "Introduza o seu email",
                 ),
               ),
               SizedBox(height: 16),
@@ -75,36 +75,8 @@ class TelaLogin extends StatelessWidget {
                     )
                 ),
               ),
-
               SizedBox(height: 12),
-            ElevatedButton(
-            onPressed: () {
-        // Ação ao clicar no botão
-      },
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.black,
-          minimumSize: const Size(350, 50),
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),// Fundo branco, como o botão típico da Google
-        ),
 
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'assets/google_icon.png', // Caminho do ícone da Google (coloque o ficheiro na pasta assets)
-              height: 24.0,
-            ),
-            const SizedBox(width: 12.0),
-            const Text("Entrar com Google",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-          ],
-        ),
-      )
-
-
-      ,
               Spacer(), // empurra levemente o conteúdo para cima
             ],
           ),

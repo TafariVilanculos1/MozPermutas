@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMenuPrincipal.dart';
+import 'package:mozpermutas/Logica/AutenticacaoFireBase.dart';
+
 
 class TelaCriarConta extends StatefulWidget {
   @override
@@ -11,6 +12,14 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
   String? localProvincia;
   String? localDestrito;
   String? profissao;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _confirmaSenhaController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _celularController = TextEditingController();
+  AutenticacaoFireBase atfb = AutenticacaoFireBase();
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +49,21 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
                 ),
                 SizedBox(height: 20),
                 TextField(
+                  controller: _celularController,
                   decoration: InputDecoration(
                     labelText: "Introduza o seu número de celular",
                   ),
                 ),
                 SizedBox(height: 10),
                 TextField(
+                  controller: _nomeController,
                   decoration: InputDecoration(
                     labelText: "Introduza o seu nome e apelido",
                   ),
                 ),
                 SizedBox(height: 10),
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     labelText: "Introduza o seu email",
                   ),
@@ -120,26 +132,28 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
                 ),
                 SizedBox(height: 20),
                 TextField(
+                  controller: _senhaController,
                   decoration: InputDecoration(labelText: "Crie a sua senha"),
                   obscureText: true,
                 ),
                 SizedBox(height: 10),
                 TextField(
+                  controller: _confirmaSenhaController,
                   decoration: InputDecoration(labelText: "Confirme a sua senha"),
                   obscureText: true,
                 ),
                 SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>MenuPrincipal()));
+                    String email= _emailController.text;
+                    String senha = _senhaController.text;
+                    String confirmarSenha= _confirmaSenhaController.text;
+                    atfb.cadastroUtilizador(email: email, senha: senha, confirmarSenha: confirmarSenha);
+
                   },
-                  child: Text("Criar Conta", style: TextStyle(fontSize: 20)),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color(0xFF3CB371),
-                    minimumSize: Size(double.infinity, 50),
-                  ),
+                  child: Text("Criar Conta"),
                 ),
+
               ],
             ),
           ),
