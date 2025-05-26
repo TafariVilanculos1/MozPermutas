@@ -18,7 +18,7 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
   final TextEditingController _confirmaSenhaController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _celularController = TextEditingController();
-  AutenticacaoFireBase atfb = AutenticacaoFireBase();
+  AutenticacaoFirebase atfb = AutenticacaoFirebase();
 
 
   @override
@@ -144,15 +144,31 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
                 ),
                 SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () {
-                    String email= _emailController.text;
-                    String senha = _senhaController.text;
-                    String confirmarSenha= _confirmaSenhaController.text;
-                    atfb.cadastroUtilizador(email: email, senha: senha, confirmarSenha: confirmarSenha);
+                  onPressed: () async {
+                    String email = _emailController.text.trim();
+                    String senha = _senhaController.text.trim();
+                    String confirmarSenha = _confirmaSenhaController.text.trim();
 
+                    // Espera a resposta do método
+                    String? mensagem = await atfb.cadastrarUtilizador(
+                      email: email,
+                      senha: senha,
+                      confirmarSenha: confirmarSenha,
+                    );
+
+                    // Mostra o SnackBar com a mensagem
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(mensagem ?? 'Erro desconhecido.'),
+                        backgroundColor: mensagem == 'Utilizador registado com sucesso.'
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                    );
                   },
                   child: Text("Criar Conta"),
                 ),
+
 
               ],
             ),
@@ -162,3 +178,5 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
     );
   }
 }
+
+
