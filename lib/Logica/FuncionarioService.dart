@@ -17,4 +17,21 @@ class FuncionarioService {
       return false;
     }
   }
+
+  Future<Funcionario?> buscarFuncionarioPorEmail(String email) async {
+    try {
+      final response = await _supabase
+          .from('funcionarios')
+          .select()
+          .eq('email', email)
+          .single();
+
+      if (response != null) {
+        return Funcionario.fromMap(response);
+      }
+    } catch (e) {
+      print('Erro ao buscar funcionário: $e');
+    }
+    return null;
+  }
 }

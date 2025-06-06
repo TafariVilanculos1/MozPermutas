@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import '../../Logica/Models/Permuta.dart';
+import 'package:mozpermutas/Logica/Servicos/ServicosPermuta.dart';
+ // ou o caminho onde colocaste a função buscarPermutasDoUtilizador
 
-class TelaMinhasPermutas extends StatelessWidget
-{
+class TelaMinhasPermutas extends StatelessWidget {
+  String email;
+  TelaMinhasPermutas(this.email);
+  ServicosPermuta servicosPermuta = ServicosPermuta();
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         centerTitle: true,
         title: Row(
-          mainAxisSize: MainAxisSize.min, // importante para centralizar
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'MINHA PERMUTAS',
+              'MINHAS PERMUTAS',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             ),
             SizedBox(width: 8),
@@ -22,107 +26,110 @@ class TelaMinhasPermutas extends StatelessWidget
           ],
         ),
       ),
+      body: FutureBuilder<List<Permuta>>(
+        future: servicosPermuta.buscarPermutasDoUtilizador(email),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Erro: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('Nenhuma permuta encontrada.'));
+          }
 
-      body: Center(
-        child: Padding(padding: EdgeInsets.all(16),
-          child: SizedBox(
-            child: Column(
-              children: [Card(
+          final permutas = snapshot.data!;
+
+          return ListView.builder(
+            padding: EdgeInsets.all(16),
+            itemCount: permutas.length,
+            itemBuilder: (context, index) {
+              final p = permutas[index];
+              return Card(
                 color: Color(0xFF003366),
-                child: SizedBox(
-                    width: 360,
-                    height: 350,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 5,),
+                margin: EdgeInsets.only(bottom: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buildLinha("Código do Pedido:", p.codigoPermuta),
+                      buildLinha("Profissão Permuta:", p.profissao, corTexto: Color(0xFF3CB371)),
+                      buildLinha("Local actual de trabalho:", p.provinciaActual, corTexto: Color(0xFF3CB371)),
+                      buildLinha("Local Desejado:", p.provinciaDesejada, corTexto: Color(0xFF3CB371)),
+                      buildLinha("Status Permuta:", p.statuts, corTexto: Color(0xFF3CB371)),
+                      SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final confirmacao = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text("Cancelar Pedido"),
+                              content: Text("Tens a certeza que desejas cancelar este pedido?"),
+                              actions: [
+                                TextButton(
+                                  child: Text("Não"),
+                                  onPressed: () => Navigator.pop(context, false),
+                                ),
+                                TextButton(
+                                  child: Text("Sim"),
+                                  onPressed: () => Navigator.pop(context, true),
+                                ),
+                              ],
+                            ),
+                          );
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Código do Pedido:",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
+                          if (confirmacao == true) {
+                            try {
+                              await servicosPermuta.cancelarPermuta(p.codigoPermuta);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Permuta cancelada com sucesso!")),
+                              );
+
+                              // Recarrega a tela para atualizar a lista
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => TelaMinhasPermutas(email)),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Erro ao cancelar permuta: $e")),
+                              );
+                            }
+                          }
+                        },
+
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(350, 50),
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
                         ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Profissão Permuta:",style: TextStyle(color:Color(0xFF3CB371),fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Local actual de trabalho:",style: TextStyle(color:Color(0xFF3CB371),fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Local Desejado:",style: TextStyle(color:Color(0xFF3CB371),fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Data Pedido:",style: TextStyle(color:Color(0xFF3CB371),fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Status Permuta:",style: TextStyle(color:Color(0xFF3CB371),fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text("Funcionário Pareado:",style: TextStyle(color:Color(0xFF3CB371),fontWeight: FontWeight.bold,fontSize: 20),),
-                            SizedBox(width: 10,),
-                            Text("kkkkkk",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20))
-                          ],
-                        )
-                      ],
-                    ),
+                        child: Text("CANCELAR PEDIDO", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-                ElevatedButton(onPressed: (){},
-                    child: Text("CANCELAR PEDIDO",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(350, 50),
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white
-
-                  ),
-                )
-              
-              ],
-            ),
-          ),
-        ),
+              );
+            },
+          );
+        },
       ),
-
     );
   }
 
-
+  Widget buildLinha(String titulo, String valor, {Color corTexto = Colors.white}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(titulo, style: TextStyle(color: corTexto, fontWeight: FontWeight.bold, fontSize: 18)),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(valor, style: TextStyle(color: Colors.white, fontSize: 18)),
+          ),
+        ],
+      ),
+    );
+  }
 }

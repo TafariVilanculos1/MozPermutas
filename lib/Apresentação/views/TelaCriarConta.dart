@@ -15,6 +15,8 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
   String? provinciaSelecionada;
   String? distritoSelecionado;
 
+
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _confirmaSenhaController = TextEditingController();
@@ -169,20 +171,32 @@ class _TelaCriarContaState extends State<TelaCriarConta> {
                   // Verifica se o registo no Firebase teve sucesso
                   if (mensagem == 'Utilizador registado com sucesso.') {
                     // Criar objeto Funcionario
+                    ServicoDadosDropdown servico = ServicoDadosDropdown();
+                    String? empresaId = await servico.buscarEmpresaIdPorNome(empresaSelecionada ?? '');
+
+                    if (empresaId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Erro: Empresa não encontrada."), backgroundColor: Colors.red),
+                      );
+                      return;
+                    }
+
                     Funcionario funcionario = Funcionario(
                       nome: _nomeController.text.trim(),
                       email: email,
                       celular: _celularController.text.trim(),
                       empresa: empresaSelecionada ?? '',
+                      empresaId: empresaId,
                       profissao: profissaoSelecionada ?? '',
                       provincia: provinciaSelecionada ?? '',
                       distrito: distritoSelecionado ?? '',
-                      senha: senha, // ⚠️ Apenas para demonstração. Ideal: guardar hasheada ou evitar.
+                      senha: senha,
                     );
 
+
                     // Adicionar na Supabase
-                    FuncionarioService servico = FuncionarioService();
-                    bool sucesso = await servico.adicionarFuncionario(funcionario);
+                    FuncionarioService servicoF = FuncionarioService();
+                    bool sucesso = await servicoF.adicionarFuncionario(funcionario);
 
                     if (sucesso) {
                       ScaffoldMessenger.of(context).showSnackBar(

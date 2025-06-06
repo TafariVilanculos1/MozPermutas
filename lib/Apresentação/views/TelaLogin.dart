@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMenuPrincipal.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaCriarConta.dart';
 import 'package:mozpermutas/Logica/AutenticacaoFireBase.dart';
+
+import '../../Logica/FuncionarioService.dart';
 
 class TelaLogin extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -64,39 +67,46 @@ class TelaLogin extends StatelessWidget {
 
     // Botão de login
     ElevatedButton(
-    onPressed: () async {
-    String email = _emailController.text.trim();
-    String senha = _senhaController.text.trim();
+      onPressed: () async {
+        String email = _emailController.text.trim();
+        String senha = _senhaController.text.trim();
 
-    String? mensagem = await atfb.loginUtilizador(
-    email: email,
-    senha: senha,
-    );
+        String? mensagem = await atfb.loginUtilizador(email: email, senha: senha);
 
-    if (mensagem == 'Login efectuado com sucesso.') {
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-    content: Text('Bem-vindo!'),
-    backgroundColor: Colors.green,
-    duration: Duration(seconds: 2),
-    ),
-    );
+        if (mensagem == 'Login efectuado com sucesso.') {
+          final userEmail = FirebaseAuth.instance.currentUser?.email;
 
-    await Future.delayed(Duration(seconds: 2));
-    Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-    builder: (context) => MenuPrincipal()),
-    );
-    } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-    content: Text(mensagem ?? 'Erro desconhecido.'),
-    backgroundColor: Colors.red,
-    ),
-    );
-    }
-    },
+          if (userEmail != null) {
+            FuncionarioService funcionarioService = FuncionarioService();
+            final funcionario = await funcionarioService.buscarFuncionarioPorEmail(userEmail);
+
+            if (funcionario != null) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MenuPrincipal(funcionario: funcionario),
+                ),
+              );
+              return;
+            }
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erro ao carregar dados do utilizador.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(mensagem ?? 'Erro desconhecido.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+      ,
     child: Text("Entrar",
     style: TextStyle(
     fontSize: 18, fontWeight: FontWeight.bold)),

@@ -50,4 +50,42 @@ class ServicoDadosDropdown {
 
     return response.map((e) => e['nome'] as String).toList();
   }
+
+
+  Future<List<String>> carregarProvinciasPorEmpresa(String nomeEmpresa) async {
+    // 1. Obter o ID da empresa
+    final empresa = await supabase
+        .from('empresas')
+        .select('id')
+        .eq('nome', nomeEmpresa)
+        .single();
+
+    final empresaId = empresa['id'];
+
+    // 2. Buscar as províncias associadas via tabela relacional
+    final response = await supabase
+        .from('empresa_provincias')
+        .select('provincias(nome)')
+        .eq('empresa_id', empresaId);
+
+    // 3. Extrair os nomes das províncias
+    return response.map((e) => e['provincias']['nome'] as String).toList();
+  }
+
+  Future<String?> buscarEmpresaIdPorNome(String nomeEmpresa) async {
+    try {
+      final response = await Supabase.instance.client
+          .from('empresas')
+          .select('id')
+          .eq('nome', nomeEmpresa)
+          .single();
+
+      return response['id'] as String?;
+    } catch (e) {
+      print('Erro ao buscar o ID da empresa: $e');
+      return null;
+    }
+  }
+
+
 }

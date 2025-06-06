@@ -1,18 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:mozpermutas/Logica/Models/Permuta.dart';
+import 'package:mozpermutas/Logica/Servicos/ServicosPermuta.dart';
+import '../../Logica/Models/Funcionario.dart';
 
 class TelaRealizarPermuta extends StatefulWidget
 {
+  final Funcionario funcionario;
+
+  const TelaRealizarPermuta({Key? key, required this.funcionario}) : super(key: key);
   @override
-  TelaRealizarPermutaState createState() => TelaRealizarPermutaState();
+  TelaRealizarPermutaState createState() => TelaRealizarPermutaState(funcionario);
 
 }
 
 class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
 {
+  Funcionario funcionario;
 
+  TelaRealizarPermutaState(this.funcionario);
   String? provinciaDesejada;
   String? destritoDesejado;
   String? motivoPermuta;
+
+  List<String> provincias = [];
+  List<String> distritos = [];
+
+  ServicosPermuta srvp = ServicosPermuta();
+
+  @override
+  void initState() {
+    super.initState();
+    carregarDadosIniciais();
+  }
+
+  Future<void> carregarDadosIniciais() async {
+    final listaProvincias = await srvp.buscarProvincias(funcionario.empresa);
+    final listaDistritos = await srvp.buscarDistritos(funcionario.empresa);
+
+    setState(() {
+      provincias = listaProvincias;
+      distritos = listaDistritos;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +81,8 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
                               alignment: Alignment.centerLeft,
                               child: Text("Profissão:",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 16),)
                           ),
-                       Text("    kk",style: TextStyle(color: Color(0xFF3CB371),fontWeight: FontWeight.w800))
+                       SizedBox(width: 10,),
+                       Text(funcionario.profissao.toUpperCase(),style: TextStyle(color: Color(0xFF3CB371),fontWeight: FontWeight.w800))
                         ],
                       ),
                       SizedBox(height: 15),
@@ -59,9 +90,10 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
                         children: [
                           Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Local de Trabalho:",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 16),)
+                              child: Text("Empresa:",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 16),)
                           ),
-                          Text("    kkk", style: TextStyle(color: Color(0xFF3CB371),fontWeight: FontWeight.w800),)
+                          SizedBox(width: 10,),
+                          Text(funcionario.empresa.toUpperCase(), style: TextStyle(fontSize:16,color: Color(0xFF3CB371),fontWeight: FontWeight.w800),)
                         ],
                       ),
 
@@ -73,17 +105,16 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
                       SizedBox(height: 15),
                       DropdownButtonFormField<String>(
                         dropdownColor: Colors.black,
-                          value:provinciaDesejada,
-                          hint: Text("Selecione a pronvincia",style: TextStyle(color: Colors.white),),
-                          items: const[
-                            DropdownMenuItem(value:"Maputo",child: Text("Maputo",style: TextStyle(color: Colors.white),)),
-                            DropdownMenuItem(value:"Gaza",child: Text("Gaza",style: TextStyle(color: Colors.white))),
-                          ], onChanged: (value){
-                            setState(() {
-                              value=provinciaDesejada;
-                            });
-                      },
-
+                        value: provinciaDesejada,
+                        hint: Text("Selecione a provincia", style: TextStyle(color: Colors.white)),
+                        items: provincias.map((prov) {
+                          return DropdownMenuItem(value: prov, child: Text(prov, style: TextStyle(color: Colors.white)));
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            provinciaDesejada = value;
+                          });
+                        },
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
@@ -91,37 +122,34 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
                               borderSide: BorderSide(color: Color(0xFF3CB371), width: 2),
                             )
                         ),
-
-
                       ),
+
                       SizedBox(height: 15),
                       Align(
                           alignment: Alignment.centerLeft,
                           child: Text("Destrito Desejado",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 16),)
                       ),
                       SizedBox(height: 15),
-                      DropdownButtonFormField<String>(
-                        dropdownColor: Colors.black,
-                        value:destritoDesejado,
-                        hint: Text("Selecione o destrito",style: TextStyle(color: Colors.white)),
-                        items: const[
-                          DropdownMenuItem(value:"Kanfumo",child: Text("Kanfumo",style: TextStyle(color: Colors.white),)),
-                          DropdownMenuItem(value:"Kamaxaquene",child: Text("Kamaxaquene",style: TextStyle(color: Colors.white))),
-                        ], onChanged: (value){
-                        setState(() {
-                          value=destritoDesejado;
-                        });
-                      },
-
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Color(0xFF3CB371), width: 2),
-                            )
-                        ),
-
-                      ),
+                   DropdownButtonFormField<String>(
+                     dropdownColor: Colors.black,
+                     value: destritoDesejado,
+                     hint: Text("Selecione o distrito", style: TextStyle(color: Colors.white)),
+                     items: distritos.map((dist) {
+                       return DropdownMenuItem(value: dist, child: Text(dist, style: TextStyle(color: Colors.white)));
+                     }).toList(),
+                     onChanged: (value) {
+                       setState(() {
+                         destritoDesejado = value;
+                       });
+                     },
+                     decoration: InputDecoration(
+                         border: OutlineInputBorder(),
+                         focusedBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12),
+                           borderSide: BorderSide(color: Color(0xFF3CB371), width: 2),
+                         )
+                     ),
+                   ),
                       SizedBox(height: 16,),
                       Text("Motivo da Permuta",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
                       SizedBox(height: 16,),
@@ -132,9 +160,10 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
                         items: const[
                           DropdownMenuItem(value:"Doênça",child: Text("Doênca",style: TextStyle(color: Colors.white),)),
                           DropdownMenuItem(value:"Familiar",child: Text("Familiar",style: TextStyle(color: Colors.white))),
+                          DropdownMenuItem(value:"Outro",child: Text("Outro...",style: TextStyle(color: Colors.white))),
                         ], onChanged: (value){
                         setState(() {
-                          value= motivoPermuta;
+                          motivoPermuta = value;
                         });
                       },
 
@@ -153,21 +182,43 @@ class TelaRealizarPermutaState extends State<TelaRealizarPermuta>
                  )
                )
            ),
-           ElevatedButton(onPressed: (){
-             //Minha querida Logica
-           },
-               child: Text("Enviar Pedido" ,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w800,fontSize: 16),),
-               style: ElevatedButton.styleFrom(
-                 foregroundColor: Colors.white,
-                 backgroundColor: Color(0xFF3CB371),
-                 minimumSize:Size(250, 50)
-               )
-
-
+           ElevatedButton(
+             onPressed: () async {
+               if (provinciaDesejada != null && destritoDesejado != null && motivoPermuta != null) {
+                 Permuta permuta = Permuta(codigoPermuta: srvp.gerarCodigoPermuta(), nome:funcionario.nome , email: funcionario.email, empresa: funcionario.empresa, profissao: funcionario.profissao, provinciaActual: funcionario.provincia, distritoActual: funcionario.distrito, provinciaDesejada: provinciaDesejada!, distritoDesejado: destritoDesejado!, motivo: motivoPermuta!, statuts: "Pendente");
+                 try {
+                   await srvp.guardarPedidoPermuta(
+                     permuta
+                   );
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(content: Text('Pedido enviado com sucesso!')),
+                   );
+                 } catch (e) {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(content: Text('Erro: $e')),
+                   );
+                 }
+               } else {
+                 ScaffoldMessenger.of(context).showSnackBar(
+                   SnackBar(content: Text('Preencha todos os campos!')),
+                 );
+               }
+             },
+             child: Text(
+               "Enviar Pedido",
+               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+             ),
+             style: ElevatedButton.styleFrom(
+               foregroundColor: Colors.white,
+               backgroundColor: Color(0xFF3CB371),
+               minimumSize: Size(250, 50),
+             ),
            )
+
          ],
        ),
      );
   }
 
 }
+

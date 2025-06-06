@@ -4,7 +4,12 @@ import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMeuPerfil.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMinhasPermutas.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaRealizarPermuta.dart';
 
+import '../../Logica/Models/Funcionario.dart';
+
 class MenuPrincipal extends StatelessWidget{
+  final Funcionario funcionario;
+
+  const MenuPrincipal({Key? key,required this.funcionario}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -29,7 +34,7 @@ class MenuPrincipal extends StatelessWidget{
                 Icon(Icons.person, color: Colors.white),
                 SizedBox(width: 8),
                 Text(
-                  'Meu Perfil',
+                  funcionario.nome,
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
@@ -49,7 +54,12 @@ class MenuPrincipal extends StatelessWidget{
             SizedBox(height: 46,),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TelaRealizarPermuta()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TelaRealizarPermuta(funcionario: funcionario),
+                  ),
+                );
               },
               child: Text("REALIZAR PERMUTA",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               style: ElevatedButton.styleFrom(
@@ -64,7 +74,7 @@ class MenuPrincipal extends StatelessWidget{
             SizedBox(height: 45,),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TelaMinhasPermutas()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => TelaMinhasPermutas(funcionario.email)));
               },
               child: Text("MINHAS PERMUTAS",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               style: ElevatedButton.styleFrom(
@@ -99,3 +109,5 @@ class MenuPrincipal extends StatelessWidget{
   }
 
 }
+
+
