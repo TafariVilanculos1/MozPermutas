@@ -1,8 +1,6 @@
 import 'package:mozpermutas/Logica/Models/Permuta.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../Models/Funcionario.dart';
-
 class ServicosPermuta {
   final supabase = Supabase.instance.client;
 
@@ -121,9 +119,23 @@ class ServicosPermuta {
         .from('pedidos_permuta')
         .delete()
         .eq('codigo_permuta', codigoPermuta);
-
-
   }
+
+  Future<List<Permuta>> buscarPermutasCompativeis(Permuta minhaPermuta) async {
+    final response = await supabase
+        .from('pedidos_permuta')
+        .select()
+        .eq('empresa', minhaPermuta.empresa)
+        .eq('profissao', minhaPermuta.profissao)
+        .eq('provincia_actual', minhaPermuta.provinciaDesejada)
+        .eq('provincia_desejada', minhaPermuta.provinciaActual)
+        .neq('email', minhaPermuta.email); // excluir o próprio pedido
+
+    return (response as List)
+        .map((map) => Permuta.fromMap(map as Map<String, dynamic>))
+        .toList();
+  }
+
 
 
 

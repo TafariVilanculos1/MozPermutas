@@ -56,7 +56,6 @@ class TelaMinhasPermutas extends StatelessWidget {
                       buildLinha("Profissão Permuta:", p.profissao, corTexto: Color(0xFF3CB371)),
                       buildLinha("Local actual de trabalho:", p.provinciaActual, corTexto: Color(0xFF3CB371)),
                       buildLinha("Local Desejado:", p.provinciaDesejada, corTexto: Color(0xFF3CB371)),
-                      buildLinha("Status Permuta:", p.statuts, corTexto: Color(0xFF3CB371)),
                       SizedBox(height: 12),
                       ElevatedButton(
                         onPressed: () async {
@@ -133,3 +132,4 @@ class TelaMinhasPermutas extends StatelessWidget {
     );
   }
 }
+

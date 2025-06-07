@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaBuscarCompativeis.dart';
+import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaLogin.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMeuPerfil.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaMinhasPermutas.dart';
+import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaNotificacaoPermuta.dart';
 import 'package:mozpermutas/Apresenta%C3%A7%C3%A3o/views/TelaRealizarPermuta.dart';
-
 import '../../Logica/Models/Funcionario.dart';
 
 class MenuPrincipal extends StatelessWidget{
@@ -17,10 +18,18 @@ class MenuPrincipal extends StatelessWidget{
     return Scaffold(
       appBar:AppBar(
       backgroundColor: Colors.black,
-      title: Text("MOZ PERMUTAS",style: TextStyle(fontSize: 15,color: Color(0xFF3CB371),fontWeight: FontWeight.bold,fontStyle:FontStyle.italic ),),
+      title: InkWell(onTap:(){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => TelaLogin()));
+
+      },child: Text("MOZ PERMUTAS",style: TextStyle(fontSize: 15,color: Color(0xFF3CB371),fontWeight: FontWeight.bold,fontStyle:FontStyle.italic ),)),
       elevation: 10,
       iconTheme: IconThemeData(color: Colors.white),
       actions: [
+        InkWell(onTap:(){
+           Navigator.push(context, MaterialPageRoute(builder: (context) => TelaNotificacaoPermuta(funcionario: funcionario,)));
+        },
+            child: Icon(Icons.notification_add_rounded)),
+        SizedBox(width: 40,),
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: InkWell(
@@ -89,7 +98,7 @@ class MenuPrincipal extends StatelessWidget{
             SizedBox(height: 45,),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context,MaterialPageRoute(builder: (context) => TelaBuscarCompativeis()));
+                Navigator.push(context,MaterialPageRoute(builder: (context) => TelaBuscarCompativeis(funcionario: funcionario,)));
               },
               child: Text("BUSCAR COMPATÍVEIS",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               style: ElevatedButton.styleFrom(
